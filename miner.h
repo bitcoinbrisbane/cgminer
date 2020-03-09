@@ -968,6 +968,7 @@ static inline void _cg_wunlock(cglock_t *lock, const char *file, const char *fun
 }
 
 struct pool;
+struct schedtime;
 
 #define API_LISTEN_ADDR "0.0.0.0"
 #define API_MCAST_CODE "FTW"
@@ -1123,6 +1124,7 @@ bool submit_nonce2_nonce(struct thr_info *thr, struct pool *pool, struct pool *r
 extern int restart_wait(struct thr_info *thr, unsigned int mstime);
 
 extern void kill_work(void);
+extern void stop_mining(void);
 
 extern void reinit_device(struct cgpu_info *cgpu);
 

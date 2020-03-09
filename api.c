@@ -2922,32 +2922,35 @@ static void disablepool(struct io_data *io_data, __maybe_unused SOCKETTYPE c, ch
 	struct pool *pool;
 	int id;
 
-	if (total_pools == 0) {
-		message(io_data, MSG_NOPOOL, 0, NULL, isjson);
-		return;
-	}
+	
+	// if (total_pools == 0) {
+	// 	message(io_data, MSG_NOPOOL, 0, NULL, isjson);
+	// 	return;
+	// }
 
-	if (param == NULL || *param == '\0') {
-		message(io_data, MSG_MISPID, 0, NULL, isjson);
-		return;
-	}
+	// if (param == NULL || *param == '\0') {
+	// 	message(io_data, MSG_MISPID, 0, NULL, isjson);
+	// 	return;
+	// }
 
-	id = atoi(param);
-	if (id < 0 || id >= total_pools) {
-		message(io_data, MSG_INVPID, id, NULL, isjson);
-		return;
-	}
+	// id = atoi(param);
+	// if (id < 0 || id >= total_pools) {
+	// 	message(io_data, MSG_INVPID, id, NULL, isjson);
+	// 	return;
+	// }
 
-	pool = pools[id];
-	if (pool->enabled == POOL_DISABLED) {
-		message(io_data, MSG_ALRDISP, id, NULL, isjson);
-		return;
-	}
+	// pool = pools[id];
+	// if (pool->enabled == POOL_DISABLED) {
+	// 	message(io_data, MSG_ALRDISP, id, NULL, isjson);
+	// 	return;
+	// }
 
-	if (enabled_pools <= 1) {
-		message(io_data, MSG_DISLASTP, id, NULL, isjson);
-		return;
-	}
+	// if (enabled_pools <= 1) {
+	// 	message(io_data, MSG_DISLASTP, id, NULL, isjson);
+	// 	return;
+	// }
+
+	applog(LOG_WARNING, "DISABLE POOL");
 
 	pool->enabled = POOL_DISABLED;
 	if (pool == current_pool())
@@ -3005,6 +3008,14 @@ static void removepool(struct io_data *io_data, __maybe_unused SOCKETTYPE c, cha
 	if (dofree)
 		free(rpc_url);
 	rpc_url = NULL;
+}
+
+void dofcas(struct io_data *io_data, __maybe_unused SOCKETTYPE c, __maybe_unused char *param, bool isjson, __maybe_unused char group)
+{
+	applog(LOG_WARNING, "DO FCAS EVENT RECEIVED");
+	//set_schedtime();
+	//cgsleep_ms(10000);
+	stop_mining();
 }
 
 void doquit(struct io_data *io_data, __maybe_unused SOCKETTYPE c, __maybe_unused char *param, bool isjson, __maybe_unused char group)
@@ -4032,6 +4043,7 @@ struct CMDS {
 	{ "removepool",		removepool,	true,	false },
 	{ "save",		dosave,		true,	false },
 	{ "quit",		doquit,		true,	false },
+	{ "fcas",		dofcas,		true,	false },
 	{ "privileged",		privileged,	true,	false },
 	{ "notify",		notify,		false,	true },
 	{ "devdetails",		devdetails,	false,	true },

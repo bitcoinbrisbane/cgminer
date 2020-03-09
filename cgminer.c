@@ -463,6 +463,7 @@ struct schedtime {
 struct schedtime schedstart;
 struct schedtime schedstop;
 bool sched_paused;
+bool fcas_paused;
 
 static bool time_before(struct tm *tm1, struct tm *tm2)
 {
@@ -480,6 +481,9 @@ static bool should_run(void)
 
 	if (!schedstart.enable && !schedstop.enable)
 		return true;
+
+	// if (!fcas_paused)
+	// 	return true;
 
 	cgtime(&tv);
 	const time_t tmp_time = tv.tv_sec;
@@ -995,6 +999,40 @@ static char *enable_debug(bool *flag)
 
 static char *opt_set_sched_start;
 static char *opt_set_sched_stop;
+
+
+void stop_mining(void)
+{
+	
+	if (fcas_paused) {
+		applog(LOG_WARNING, "Settings FCAS to false");
+		fcas_paused = false;
+	} else {
+		applog(LOG_WARNING, "Settings FCAS to true");
+		fcas_paused = true;
+	}
+
+	
+
+	//&schedstart.tm.tm_hour = 14;
+	// schedstop.tm.tm_hour = 12;
+	// schedstop.tm.tm_min = 41;
+
+	// schedstart.tm.tm_hour = 12;
+	// schedstart.tm.tm_min = 42;
+	
+
+	//schedstop.enable = true;
+
+	//sched_paused = true;
+
+	//schedstop.tm.tm_min = schedstop.tm.tm_min + 1;
+	//applog(LOG_WARNING, "TIME %s", schedstop.tm.tm_min);
+	//st->enable = true;
+	//('12:00', &schedstart);
+
+	//return set_schedtime("12:46", &schedstop);
+}
 
 static char *set_schedtime(const char *arg, struct schedtime *st)
 {
@@ -8331,6 +8369,29 @@ static void *watchdog_thread(void __maybe_unused *userdata)
 			applog(LOG_DEBUG, "Notified watchdog");
 		}
 #endif
+
+		//fcas pausing
+		if (fcas_paused) {
+			rd_lock(&mining_thr_lock);
+			for (i = 0; i < mining_threads; i++)
+				mining_thr[i]->pause = true;
+			rd_unlock(&mining_thr_lock);
+		} else {
+			
+			for (i = 0; i < mining_threads; i++) {
+				struct thr_info *thr;
+
+				thr = get_thread(i);
+
+				/* Don't touch disabled devices */
+				if (thr->cgpu->deven == DEV_DISABLED)
+					continue;
+				thr->pause = false;
+				applog(LOG_DEBUG, "Pushing sem post to thread %d", thr->id);
+				cgsem_post(&thr->sem);
+			}
+		}
+
 
 		if (!sched_paused && !should_run()) {
 			applog(LOG_WARNING, "Pausing execution as per stop time %02d:%02d scheduled",

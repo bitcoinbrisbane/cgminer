@@ -1462,6 +1462,7 @@ static void nanosleep_abstime(struct timespec *ts_end)
  * counted in the sleep. */
 void cgsleep_ms_r(cgtimer_t *ts_start, int ms)
 {
+	//applog(LOG_WARNING, "DO CG SLEEP MS R");
 	struct timespec ts_end;
 
 	ms_to_timespec(&ts_end, ms);
@@ -1604,6 +1605,7 @@ void cgsleep_us_r(cgtimer_t *ts_start, int64_t us)
 
 void cgsleep_ms(int ms)
 {
+	//applog(LOG_WARNING, "DO CG SLEEP");
 	cgtimer_t ts_start;
 
 	cgsleep_prepare_r(&ts_start);
