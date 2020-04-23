@@ -18,3 +18,6 @@ jobs:
       - run:
           name: Autogen
           command: './autogen.sh'
+      - run:
+          name: Config
+          command: 'CFLAGS="-O2 -Wall -march=native" ./configure --enable-blockerupter --enable-icarus'
