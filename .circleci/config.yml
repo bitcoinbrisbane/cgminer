@@ -17,4 +17,4 @@ jobs:
           command: 'apt-get update && sudo apt-get install -y cmake'
       - run:
           name: Autogen
-          command: ''./autogen.sh'
+          command: './autogen.sh'
