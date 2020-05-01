@@ -40,16 +40,20 @@ else:
 	api_ip = sys.argv[2]
 	api_port = sys.argv[3]
 
-s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((api_ip,int(api_port)))
 if len(api_command) == 2:
-	s.send(json.dumps({"command":api_command[0],"parameter":api_command[1]}))
+	s.send(bytes(json.dumps({"command":api_command[0],"parameter":api_command[1]})))
 else:
-	s.send(json.dumps({"command":api_command[0]}))
+    data = json.dumps({"command":api_command[0]})
+    s.sendall(bytes(data,encoding="utf-8"))
+	#s.send(bytes(json.dumps({"command":api_command[0]})))
 
+response = s.recv(1024)
+print(response.decode("utf-8"))
 #print response
-response = linesplit(s)
-response = response.replace('\x00','')
-response = json.loads(response)
-print(response)
+#response = linesplit(s)
+#response = response.replace('\x00','')
+#response = json.loads(response)
+#print(response)
 s.close()
