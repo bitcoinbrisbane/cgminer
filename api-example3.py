@@ -34,7 +34,7 @@ api_command = sys.argv[1].split('|')
 if len(sys.argv) < 3:
 	#api_ip = '127.0.0.1'
 	#api_ip = '192.168.1.135'
-	api_ip = '127.0.0.1'
+	api_ip = '192.168.1.106'
 	api_port = 4028
 else:
 	api_ip = sys.argv[2]
