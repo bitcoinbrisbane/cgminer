@@ -9,5 +9,7 @@ make
 ## Running the miner
 `./cgminer -o stratum+tcp://pool.bitcoinbrisbane.com.au:3256 -u 1DugongACGcyyvvgvcy8skYyezsx5jy3aV -p Test --api-listen --api-allow W:192.168.1.0/24`
 
+`./cgminer -o stratum+tcp://btc.f2pool.com:3333 -u 1DugongACGcyyvvgvcy8skYyezsx5jy3aV -p Test --api-listen --api-allow W:192.168.1.0/24`
+
 ## Run API client
 `python api-example pools`
